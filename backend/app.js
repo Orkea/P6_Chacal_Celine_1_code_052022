@@ -1,16 +1,19 @@
 const mongoose = require('mongoose')
 // Installation du framework Express
 const express = require('express')
-// Importation por accéder au path du serveur
-const path = require('path')
 // Importation du routeur sauce
 const sauceRoutes = require('./routes/sauce')
 // Importation du routeur utilisateurs
 const userRoutes = require('./routes/user')
+// Importation pour accéder au path du serveur
+const path = require('path')
+// Importation de dotenv pour les variavles d'environnement
+require('dotenv').config()
+
 
 const app = express()
 // Installation de mongoose et connexion
-mongoose.connect('mongodb+srv://orkea971:rDIi3kJn3e0cNFmX@orkea-p6.me8lzrt.mongodb.net/?retryWrites=true&w=majority&appName=Orkea-P6')
+mongoose.connect(process.env.URL_MONGOOSE)
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'))
 
