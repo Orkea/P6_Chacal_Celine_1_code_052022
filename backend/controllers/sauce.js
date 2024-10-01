@@ -1,4 +1,3 @@
-const { error } = require('console')
 const Sauce = require('../models/sauce')
 const fs = require("fs")
 
@@ -73,7 +72,36 @@ exports.getAllSauce = (req, res, next) => {
 }
 
 exports.likeSauce = (req, res, next) =>{
-    Sauce.findOne({ _id: req.params.id })
-    .then(() => res.status(200).json({message : "Je suis dans le controller likeSauce" }))
-    .catch(error => res.status(404).json({ error }))
+    const userId = req.auth.userId
+    const like = req.body.like
+
+    // Securisation du nombre de like reçu(s)
+    if(![-1, 0, 1].includes(like)){
+        return res.status(403).json({Message:"Non autorisé"})
+    } else {
+        // Recupération de la Sauce dans la DBB
+        Sauce.findOne({ _id: req.params.id })
+
+        .then(sauce =>{
+            // L'utilisateur like la sauce
+            if(!sauce.usersLiked.includes(userId) && like === 1){
+                Sauce.updateOne({ _id: req.params.id }, { $inc:{likes: like}, $push:{usersLiked: userId}, $pull:{usersDisliked: userId} })
+                    .then(() => res.status(201).json({Message:"L'Utilisateur à LIKER"}))
+                    .catch(error => { res.status(400).json({ error }) })
+                }
+            // L'utilisateur dislike la sauce
+            if(!sauce.usersDisliked.includes(userId) && like === -1){
+                Sauce.updateOne({ _id: req.params.id }, { $inc:{dislikes: like}, $push:{usersDisliked: userId}, $pull:{usersLiked: userId} })
+                    .then(() => res.status(201).json({Message:"L'Utilisateur à DISLIKER"}))
+                    .catch(error => { res.status(400).json({ error }) })
+                }
+            // Lutilisateur est neutre sur la sauce
+            if(like === 0){
+                Sauce.updateOne({ _id: req.params.id }, {$pull:{usersLiked: userId}, $pull:{usersDisliked: userId} })
+                .then(() => res.status(201).json({Message:"L'Utilisateur est neutre"}))
+                .catch(error => { res.status(400).json({ error }) })
+            }  
+            })
+        .catch(error => res.status(404).json({ error }))
+    }    
 }
