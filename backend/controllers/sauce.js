@@ -1,10 +1,15 @@
+const { error } = require('console')
 const Sauce = require('../models/sauce')
 const fs = require("fs")
 
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce)
+   // Supression des données non souhaitées
     delete sauceObject._id
     delete sauceObject._userId
+    delete sauceObject.likes
+    delete sauceObject.dislikes
+
     const sauce = new Sauce({
         ...sauceObject,
         userId: req.auth.userId,
@@ -12,9 +17,7 @@ exports.createSauce = (req, res, next) => {
     })
     sauce.save()
         .then(() => res.status(201).json({ message: "Objet enregistré !" }))
-        .catch(error => {
-            console.log(error);
-            res.status(400).json({ error });
+        .catch(error => {res.status(400).json({ error });
         })
 }
 
@@ -33,9 +36,6 @@ exports.modifySauce = (req, res, next) => {
     delete sauceObject._userId
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
-            console.log(sauce)
-            console.log(sauce.userId)
-            console.log(req.auth.userId)
             if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message: "Non AUTORISER" })
 
@@ -66,9 +66,14 @@ exports.deleteSauce = (req, res, next) => {
         .catch(error => res.status(500).js({ error }))
 }
 
-
 exports.getAllSauce = (req, res, next) => {
     Sauce.find()
         .then(sauces => res.status(200).json(sauces))
         .catch(error => res.status(400).json({ error }))
+}
+
+exports.likeSauce = (req, res, next) =>{
+    Sauce.findOne({ _id: req.params.id })
+    .then(() => res.status(200).json({message : "Je suis dans le controller likeSauce" }))
+    .catch(error => res.status(404).json({ error }))
 }
