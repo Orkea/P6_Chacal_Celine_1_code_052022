@@ -75,9 +75,9 @@ exports.likeSauce = (req, res, next) =>{
     const userId = req.auth.userId
     const like = req.body.like
 
-    // Securisation du nombre de like reçu(s)
+    // Securisation du nombre de like reçu(s) du frontend
     if(![-1, 0, 1].includes(like)){
-        return res.status(403).json({Message:"Non autorisé"})
+        return res.status(401).json({Message:"Non AUTORISE"})
     } else {
         // Recupération de la Sauce dans la DBB
         Sauce.findOne({ _id: req.params.id })
@@ -85,22 +85,28 @@ exports.likeSauce = (req, res, next) =>{
         .then(sauce =>{
             // L'utilisateur like la sauce
             if(!sauce.usersLiked.includes(userId) && like === 1){
-                Sauce.updateOne({ _id: req.params.id }, { $inc:{likes: like}, $push:{usersLiked: userId}, $pull:{usersDisliked: userId} })
+                Sauce.updateOne({ _id: req.params.id }, { $inc:{likes: +1}, $push:{usersLiked: userId} })
                     .then(() => res.status(201).json({Message:"L'Utilisateur à LIKER"}))
                     .catch(error => { res.status(400).json({ error }) })
                 }
             // L'utilisateur dislike la sauce
             if(!sauce.usersDisliked.includes(userId) && like === -1){
-                Sauce.updateOne({ _id: req.params.id }, { $inc:{dislikes: like}, $push:{usersDisliked: userId}, $pull:{usersLiked: userId} })
+                Sauce.updateOne({ _id: req.params.id }, { $inc:{dislikes: +1}, $push:{usersDisliked: userId} })
                     .then(() => res.status(201).json({Message:"L'Utilisateur à DISLIKER"}))
                     .catch(error => { res.status(400).json({ error }) })
                 }
-            // Lutilisateur est neutre sur la sauce
-            if(like === 0){
-                Sauce.updateOne({ _id: req.params.id }, {$pull:{usersLiked: userId}, $pull:{usersDisliked: userId} })
-                .then(() => res.status(201).json({Message:"L'Utilisateur est neutre"}))
+            // L'utilisateur enleve son like
+            if(sauce.usersLiked.includes(userId) && like === 0){
+                Sauce.updateOne({ _id: req.params.id }, {  $inc:{likes: -1} ,$pull:{usersLiked: userId}})
+                .then(() => res.status(201).json({Message:"L'Utilisateur à enlever son like"}))
                 .catch(error => { res.status(400).json({ error }) })
-            }  
+            } 
+             // L'utilisateur enleve son dislike
+             if(sauce.usersDisliked.includes(userId) && like === 0){
+                Sauce.updateOne({ _id: req.params.id }, {  $inc:{dislikes: -1} ,$pull:{usersDisliked: userId}})
+                .then(() => res.status(201).json({Message:"L'Utilisateur à enlever son dislike"}))
+                .catch(error => { res.status(400).json({ error }) })
+            } 
             })
         .catch(error => res.status(404).json({ error }))
     }    
