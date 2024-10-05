@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 // Importation du token d'authentification
 const jwt = require('jsonwebtoken')
+// Importation de dotenv pour les variavles d'environnement
+require('dotenv').config()
 
 exports.signup = (req, res, next) => {
     //Création du mot de pass avec algorithme de bcrypt *10 .
@@ -44,7 +46,7 @@ exports.login = (req, res, next) => {
                             userId: user._id,
                             token: jwt.sign(
                                 { userId: user._id },
-                                'RANDOM_TOKEN_SECRET',
+                                `${process.env.RANDOM_TOKEN_SECRET}`,
                                 { expiresIn: '24h' }
                             )
                         })
