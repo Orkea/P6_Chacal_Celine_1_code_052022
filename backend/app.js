@@ -1,17 +1,18 @@
+// Importation de mongoose
 const mongoose = require('mongoose')
-// Installation du framework Express
+// Importation du framework Express
 const express = require('express')
 // Importation du routeur sauce
 const sauceRoutes = require('./routes/sauce')
-// Importation du routeur utilisateurs
+// Importation du routeur user
 const userRoutes = require('./routes/user')
 // Importation pour accéder au path du serveur
 const path = require('path')
 // Importation de dotenv pour les variavles d'environnement
 require('dotenv').config()
-
-
+// Appel de la méthode express
 const app = express()
+
 // Installation de mongoose et connexion
 mongoose.connect(process.env.URL_MONGOOSE)
     .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -32,8 +33,8 @@ app.use((req, res, next) => {
 app.use('/api/auth', userRoutes)
 // Enregistrement du router sauce
 app.use('/api/sauces', sauceRoutes)
-// Gestion de la ressource images de maniére statique
+// Gestion de la ressource images de manière statique
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
-
+//Export de app pour y avoir accès depuis les autres fichiers
 module.exports = app
