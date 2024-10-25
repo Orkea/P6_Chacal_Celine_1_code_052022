@@ -9,14 +9,14 @@ const multer =  require('../middleware/multer-config')
 // Importation du controleur pour les sauces
 const sauceCtrl = require('../controllers/sauce')
 
-// Implementation des routers 
+// Implémentation des routers 
 // Routeur pour Affichage de toutes les sauces
 router.get('/', auth, sauceCtrl.getAllSauce)
 // Routeur pour Création d'une sauce
 router.post('/', auth, multer, sauceCtrl.createSauce)
 // Routeur pour Affichage d'une sauce
 router.get('/:id', auth, sauceCtrl.getOneSauce)
-// Routeur pour Modifiaction d'une sauce
+// Routeur pour Modification d'une sauce
 router.put('/:id', auth, multer, sauceCtrl.modifySauce)
 // Routeur pour Suppression d'une sauce
 router.delete('/:id', auth, sauceCtrl.deleteSauce)

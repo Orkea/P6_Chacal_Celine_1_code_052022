@@ -2,9 +2,9 @@
 const mongoose = require('mongoose')
 // Importation du framework Express
 const express = require('express')
-// Importation du routeur sauce
+// Importation du routeur pour les Sauces
 const sauceRoutes = require('./routes/sauce')
-// Importation du routeur user
+// Importation du routeur pour les Users
 const userRoutes = require('./routes/user')
 // Importation pour accéder au path du serveur
 const path = require('path')
