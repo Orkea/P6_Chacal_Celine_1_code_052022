@@ -1,7 +1,7 @@
 // Importation de Joi
 const Joi = require('joi')
 
-// Fonction qui permet de valider les données envoyée au backend pour la création d'un utilisateur
+// Fonction qui permet de valider les données envoyées au backend pour la création d'un utilisateur
 
 function validUserData(user) {
     const validEmail = Joi.object({

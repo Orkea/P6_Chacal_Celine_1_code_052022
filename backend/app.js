@@ -8,12 +8,12 @@ const sauceRoutes = require('./routes/sauce')
 const userRoutes = require('./routes/user')
 // Importation pour accéder au path du serveur
 const path = require('path')
-// Importation de dotenv pour les variavles d'environnement
+// Importation de dotenv pour les variables d'environnement
 require('dotenv').config()
 // Appel de la méthode express
 const app = express()
 
-// Installation de mongoose et connexion
+// Installation de mongoose et connexion à la dataBase
 mongoose.connect(process.env.URL_MONGOOSE)
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'))

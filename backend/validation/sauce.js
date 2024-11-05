@@ -1,7 +1,7 @@
 // Importation de Joi
 const Joi = require('joi')
 
-// Fonction qui permet de valider les données envoyée au backend pour la sauce
+// Fonction qui permet de valider les données envoyées au backend pour la sauce
 function validSauceData(body) {
     const validSauce = Joi.object({
         name: Joi.string().required(),

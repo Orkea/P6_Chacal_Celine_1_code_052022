@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
        req.auth = {
            userId: userId
        }
-    // Passage à l'excution suivante si tout est OK
+    // Passage à l'exécution suivante si tout est OK
 	next()
    } catch(error) {
        res.status(401).json({ error })

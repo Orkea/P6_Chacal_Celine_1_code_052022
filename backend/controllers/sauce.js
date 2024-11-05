@@ -19,7 +19,7 @@ exports.createSauce = (req, res, next) => {
     const { error, value } = validSauceData(sauceObject)
     if (error) {
         fs.unlink(`images/${req.file.filename}`, () => {
-            res.status(400).json({ message: "Mauvaise requete", error: error.details[0].message })
+            res.status(400).json({ message: "Mauvaise requete"})
         })
     } else {
 
@@ -65,7 +65,7 @@ exports.modifySauce = (req, res, next) => {
     const { error, value } = validSauceData(sauceObject)
 
     if (error) {
-        return res.status(400).json({ message: "Mauvaise requete" })
+        return res.status(400).json({ message: "Mauvaise requete", error: error.details[0].message })
     }
     // Récuperation d'une sauce dans la DataBase
     Sauce.findOne({ _id: req.params.id })
@@ -74,7 +74,7 @@ exports.modifySauce = (req, res, next) => {
             if (sauce.userId != req.auth.userId) {
                 // Supression du ficher du repertoire image
                 fs.unlink(`images/${req.file.filename}`, () => {
-                    return res.status(401).json({ message: "Non AUTORISER" })
+                    return res.status(403).json({ message: "Non AUTORISER" })
                 })
             }
             //Si l'utilisateur est celui de la sauce
@@ -104,7 +104,7 @@ exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
             if (sauce.userId != req.auth.userId) {
-                return res.status(401).json({ message: "Non AUTORISER" })
+                return res.status(403).json({ message: "Non AUTORISER" })
             } else {
                 const filename = sauce.imageUrl.split("/images")[1]
                 fs.unlink(`images/${filename}`, () => {

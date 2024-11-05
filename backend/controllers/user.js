@@ -23,7 +23,7 @@ exports.signup = (req, res, next) => {
                     email: req.body.email,
                     password: hash
                 })
-                // Sauvegarde du user créé dans le DB
+                // Sauvegarde de l'utilisateur créé dans la DataBase MongoDB
                 user.save()
                     .then(() => {
                         return res.status(201).json({ message: "Utilisateur créé ! " })
@@ -42,11 +42,11 @@ exports.login = (req, res, next) => {
     // Utilisation de la methode FindOne pour trouver l'utilisateur dans le DB
     User.findOne({ email: req.body.email })
         .then(user => {
-            // Vérification de l'existance de l'utilisateur dans la DB
+            // Vérification de l'existance de l'utilisateur dans la DataBase
             if (!user) {
                 return res.status(401).json({ message: 'Paire login/mot de passe incorrecte' })
             }
-            // Comparaison du hash de la DB et celui générer pr le mot de passe de l'utilisateur 
+            // Comparaison du hash de la DataBase et celui générer pr le mot de passe de l'utilisateur 
             bcrypt.compare(req.body.password, user.password)
                 .then(valid => {
                     // Si le mot de passe n'est pas valide on retourne un message
