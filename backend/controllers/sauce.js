@@ -18,6 +18,7 @@ exports.createSauce = (req, res, next) => {
     // Validation des données par JOI
     const { error, value } = validSauceData(sauceObject)
     if (error) {
+        // Suppression du fichier stocker pour multer
         fs.unlink(`images/${req.file.filename}`, () => {
             res.status(400).json({ message: "Mauvaise requete"})
         })
